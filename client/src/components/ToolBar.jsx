@@ -1,23 +1,23 @@
 import React from "react";
-import { useEffect, useRef ,useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FaQrcode,
-
   FaLock,
-  
+  FaProjectDiagram,
+  FaFolderOpen,
   FaBookOpen,
 } from "react-icons/fa";
 import Hamburger from "./Hamburger";
 
 const tools = [
   { name: "QR Maker", icon: <FaQrcode /> },
-
   { name: "Readme Forge", icon: <FaLock /> },
- 
+  { name: "Architecture Forge", icon: <FaProjectDiagram /> },
+  { name: "Explorer Forge", icon: <FaFolderOpen /> },
 ];
 
 const ToolBar = ({ onSelectTool, activeTool }) => {
-const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
   // 🔑 Close when clicking outside
@@ -35,12 +35,11 @@ const [isOpen, setIsOpen] = useState(false);
     };
   }, [isOpen]);
 
-
   return (
     <div className="sticky top-7 z-50 w-full mb-8">
       <div className="relative flex items-center justify-between w-full px-6 max-w-8xl mx-auto">
         {/* Left: Hamburger */}
-         <div ref={menuRef}>
+        <div ref={menuRef}>
           <button
             className="px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
             onClick={() => setIsOpen(!isOpen)}
@@ -85,14 +84,14 @@ const [isOpen, setIsOpen] = useState(false);
         </div>
         {/* Right: Other buttons */}
         <div className="flex gap-2">
-   <a
-  href="https://github.com/tanishqtiwari7/Cognibench"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="px-3 py-2 rounded-md bg-accent hover:bg-accent/80 text-xs"
->
-  GitHub
-</a>
+          <a
+            href="https://github.com/tanishqtiwari7/Cognibench"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-2 rounded-md bg-accent hover:bg-accent/80 text-xs"
+          >
+            GitHub
+          </a>
           <button className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-xs">
             Library
             <FaBookOpen className="text-md" />

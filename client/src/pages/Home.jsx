@@ -15,6 +15,8 @@ const Tools = [
   // "Background Remover",
   // "AI Summarizer",
   "Readme Forge",
+  "Architecture Forge",
+  "Explorer Forge",
 ];
 
 const Home = () => {

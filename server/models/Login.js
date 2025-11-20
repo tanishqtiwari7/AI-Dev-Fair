@@ -15,8 +15,5 @@ const CredentialsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Ensure an index on email for uniqueness
-CredentialsSchema.index({ email: 1 }, { unique: true });
-
 const Login = mongoose.model("Login", CredentialsSchema);
 module.exports = Login;

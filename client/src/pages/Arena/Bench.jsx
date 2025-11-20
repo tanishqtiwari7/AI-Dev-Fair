@@ -3,11 +3,14 @@ import ToolBar from "../../components/ToolBar";
 import Initial from "../../components/Initial";
 import QR from "./QR";
 import ReadmeForge from "./ReadmeForge";
+import ArchitectureForge from "./ArchitectureForge";
+import FileExplorerForge from "./FileExplorerForge";
 
 const tools = {
   "QR Maker": <QR />,
-
   "Readme Forge": <ReadmeForge />,
+  "Architecture Forge": <ArchitectureForge />,
+  "Explorer Forge": <FileExplorerForge />,
 };
 
 const Bench = () => {

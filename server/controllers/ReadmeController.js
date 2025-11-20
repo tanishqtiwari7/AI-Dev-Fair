@@ -15,6 +15,15 @@ function parseRepoUrl(url) {
   }
 }
 
+function jsonRepair(str) {
+  return str
+    .replace(/(\r\n|\r)/g, "\n")
+    .replace(/\n+/g, "\n")
+    .replace(/\\(?!["\\/bfnrtu])/g, "\\\\") // fix bad backslashes
+    .replace(/“|”/g, '"') // fix curly quotes
+    .replace(/‘|’/g, "'"); // fix single curly quotes
+}
+
 // Get file content from GitHub
 async function ghGet(path, token) {
   const resp = await axios.get(`https://api.github.com${path}`, {
@@ -30,23 +39,54 @@ async function fetchRepoSnapshot(owner, repo, token) {
   const repoMeta = await ghGet(`/repos/${owner}/${repo}`, token);
   const languages = await ghGet(`/repos/${owner}/${repo}/languages`, token);
 
-  const tree = await ghGet(
-    `/repos/${owner}/${repo}/git/trees/${repoMeta.default_branch}?recursive=false`,
+  // FIX 1: Get REAL tree SHA
+  const branchInfo = await ghGet(
+    `/repos/${owner}/${repo}/branches/${repoMeta.default_branch}`,
+    token
+  );
+  const treeSha = branchInfo.commit.commit.tree.sha;
+  const treeData = await ghGet(
+    `/repos/${owner}/${repo}/git/trees/${treeSha}?recursive=1`,
     token
   );
 
-  const importantFiles = (tree.tree || []).filter((file) => {
-    const p = file.path.toLowerCase();
-    return (
-      file.type === "blob" &&
-      (p === "package.json" ||
-        p === "readme.md" ||
-        p.endsWith(".js") ||
-        p.startsWith("src"))
-    );
+  const IMPORTANT_FILES = [
+    "package.json",
+    "requirements.txt",
+    "setup.py",
+    "build.gradle",
+    "pom.xml",
+    "pyproject.toml",
+    "README.md",
+    "composer.json",
+    "Gemfile",
+    "go.mod",
+  ];
+
+  const allFiles = treeData.tree || [];
+
+  const importantFiles = allFiles.filter((file) => {
+    if (file.type !== "blob") return false;
+    const name = file.path.split("/").pop();
+    return IMPORTANT_FILES.includes(name);
   });
 
-  const selectedFiles = importantFiles.slice(0, 6);
+  // Also grab some source files if we have space
+  const sourceFiles = allFiles
+    .filter((file) => {
+      if (file.type !== "blob") return false;
+      const path = file.path.toLowerCase();
+      return (
+        (path.startsWith("src/") ||
+          path.endsWith(".js") ||
+          path.endsWith(".ts") ||
+          path.endsWith(".py")) &&
+        !importantFiles.includes(file)
+      );
+    })
+    .slice(0, 5);
+
+  const selectedFiles = [...importantFiles, ...sourceFiles].slice(0, 10);
   const fileContents = {};
 
   for (const f of selectedFiles) {
@@ -143,16 +183,25 @@ async function generateReadme(req, res) {
     let json;
     try {
       // Clean up potential markdown code blocks in response
-      const cleanRaw = raw
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
+      const cleanRaw = jsonRepair(
+        raw
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim()
+      );
       json = JSON.parse(cleanRaw);
     } catch (e) {
       console.warn(
         "Failed to parse JSON from AI, returning raw text as markdown"
       );
-      json = { readme_markdown: raw, summary: "Could not parse AI response." };
+      json = {
+        summary: "AI returned invalid JSON.",
+        readme_markdown: raw,
+        mermaid: "",
+        tech_stack: [],
+        detected_scripts: {},
+        notes: "JSON parsing error, raw output returned.",
+      };
     }
 
     // Inject real language data for the frontend graph

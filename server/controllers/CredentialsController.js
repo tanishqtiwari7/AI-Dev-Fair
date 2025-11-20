@@ -37,9 +37,7 @@ async function handleSignup(req, res) {
     const user = new LoginModel({ email: trimmedEmail, password: hashed });
     await user.save();
 
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET);
     return res.status(201).json({ message: "Signup successful.", token });
   } catch (err) {
     console.error("Signup error:", err);
@@ -68,9 +66,7 @@ async function handleLogin(req, res) {
     if (!match)
       return res.status(401).json({ message: "Invalid email or password." });
 
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET);
     return res.status(200).json({ message: "Login successful.", token });
   } catch (err) {
     console.error("Login error:", err);
