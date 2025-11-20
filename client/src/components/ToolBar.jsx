@@ -2,30 +2,18 @@ import React from "react";
 import { useEffect, useRef ,useState} from "react";
 import {
   FaQrcode,
-  FaKey,
-  FaFingerprint,
-  FaPalette,
-  FaFileAlt,
-  FaMarkdown,
-  FaIdBadge,
+
   FaLock,
-  // FaImage,
-  FaAlignLeft,
+  
   FaBookOpen,
 } from "react-icons/fa";
 import Hamburger from "./Hamburger";
 
 const tools = [
   { name: "QR Maker", icon: <FaQrcode /> },
-  { name: "UUID Generator", icon: <FaIdBadge /> },
-  { name: "JWT Decoder", icon: <FaLock /> },
-  { name: "Lorem Ipsum", icon: <FaFileAlt /> },
-  { name: "JSON Formatter", icon: <FaFingerprint /> },
-  { name: "Hash Generator", icon: <FaKey /> },
-  { name: "Color Converter", icon: <FaPalette /> },
-  { name: "Markdown Previewer", icon: <FaMarkdown /> },
-  // { name: "Background Remover", icon: <FaImage /> },
-  { name: "AI Code Summarizer", icon: <FaAlignLeft /> },
+
+  { name: "Readme Forge", icon: <FaLock /> },
+ 
 ];
 
 const ToolBar = ({ onSelectTool, activeTool }) => {

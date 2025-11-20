@@ -5,15 +5,16 @@ import { FaGithub, FaDiscord, FaLinkedin } from "react-icons/fa";
 
 const Tools = [
   "QR Maker",
-  "UUID Generator",
-  "JWT Decoder",
-  "Lorem Ipsum",
-  "JSON Formatter",
-  "Hash Generator",
-  "Color Converter",
-  "Markdown Previewer",
-  "Background Remover",
-  "AI Summarizer",
+  // "UUID Generator",
+  // "JWT Decoder",
+  // "Lorem Ipsum",
+  // "JSON Formatter",
+  // "Hash Generator",
+  // "Color Converter",
+  // "Markdown Previewer",
+  // "Background Remover",
+  // "AI Summarizer",
+  "Readme Forge",
 ];
 
 const Home = () => {

@@ -24,16 +24,32 @@ export const SignupUser = async (email, password) => {
   return response.data;
 };
 
-// ----------------- AI Summarizer -----------------
+// -------------------- README GENERATOR --------------------
 
-export const summarizeCode = async (code) => {
+/**
+ * Generate README from a GitHub repo URL.
+ *
+ * Usage:
+ * const result = await generateReadme("https://github.com/owner/repo");
+ * console.log(result); // { summary, readme_markdown, mermaid, ... }
+ */
+export const generateReadme = async (repoUrl) => {
+  if (!repoUrl || typeof repoUrl !== "string") {
+    throw new Error("Invalid or missing repoUrl");
+  }
+
   const token = localStorage.getItem("token");
 
   const response = await api.post(
-    "/api/ai/code/summarize",
-    { code },
-    { headers: { Authorization: token ? `Bearer ${token}` : "" } }
+    "/api/readme/generate",
+    { repoUrl },
+    {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    }
   );
 
-  return response.data.summary;
+  // Backend returns { ok:true, data: {...} }
+  return response.data.data; // return only the payload for cleaner frontend use
 };
